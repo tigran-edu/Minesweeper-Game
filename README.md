@@ -1,1 +1,1 @@
-# course_work
+# This is my project Minesweeper
