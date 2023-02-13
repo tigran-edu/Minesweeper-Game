@@ -56,7 +56,7 @@ class Grid {
     for (int i = 0; i < cells.length; ++i) {
       for (int j = 0; j < cells[i].length; ++j) {
         if (cells[j][i].isMine) {
-          createInitialNumbersAroundMine(cells[j][i]);
+          updateValuesAroundBomb(cells[j][i]);
         }
       }
     }
@@ -90,7 +90,7 @@ class Grid {
     }
   }
 
-  void createInitialNumbersAroundMine(Cell cell) {
+  void updateValuesAroundBomb(Cell cell) {
     int xStart = cell.column < 1 ? 0 : (cell.column - 1);
     int xEnd = cell.column + 1 == size ? (size - 1) : (cell.column + 1);
 
@@ -123,29 +123,32 @@ class Grid {
   void openCells(Cell cell) {
     cell.isRevealed = true;
     totalCellsRevealed += 1;
-    int xStart = 0;
-    int xEnd = 0;
-    int yStart = 0;
-    int yEnd = 0;
+    int columnStart = 0;
+    int columnEnd = 0;
+    int rowStart = 0;
+    int rowEnd = 0;
     final queue = ListQueue<Cell>();
     queue.addLast(cell);
     while (queue.isNotEmpty) {
       final currentCell = queue.removeFirst();
-      xStart = currentCell.column < 1 ? 0 : (currentCell.column - 1);
-      xEnd = (currentCell.column + 1) == size ? (size - 1) : (currentCell.column + 1);
-      yStart = currentCell.row < 1 ? 0 : (currentCell.row - 1);
-      yEnd = (currentCell.row + 1) == size ? (size - 1) : (currentCell.row + 1);
+      columnStart = currentCell.column < 1 ? 0 : (currentCell.column - 1);
+      columnEnd = (currentCell.column + 1) == size
+          ? (size - 1)
+          : (currentCell.column + 1);
+      rowStart = currentCell.row < 1 ? 0 : (currentCell.row - 1);
+      rowEnd =
+          (currentCell.row + 1) == size ? (size - 1) : (currentCell.row + 1);
 
-      for (int i = xStart; i <= xEnd; ++i) {
-        for (int j = yStart; j <= yEnd; ++j) {
-          if (!cells[j][i].isMine &&
-              !cells[j][i].isRevealed &&
-              cells[j][i].value == 0) {
-            cells[j][i].isRevealed = true;
+      for (int i = rowStart; i <= rowEnd; ++i) {
+        for (int j = columnStart; j <= columnEnd; ++j) {
+          if (!cells[i][j].isMine &&
+              !cells[i][j].isRevealed &&
+              cells[i][j].value == 0) {
+            cells[i][j].isRevealed = true;
             totalCellsRevealed += 1;
-            queue.addLast(cells[j][i]);
-          } else if (!cells[j][i].isMine && !cells[j][i].isRevealed) {
-            cells[j][i].isRevealed = true;
+            queue.addLast(cells[i][j]);
+          } else if (!cells[i][j].isMine && !cells[i][j].isRevealed) {
+            cells[i][j].isRevealed = true;
             totalCellsRevealed += 1;
           }
         }
