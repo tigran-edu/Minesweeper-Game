@@ -26,8 +26,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var grid = Grid(Complexity.easy);
-
+  var grid = Grid(Complexity.test);
 
   Widget buildButton(Cell cell) {
     return GestureDetector(
@@ -76,11 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
         Column(
           children: rows,
         ),
-        LinearProgressIndicator(
-          backgroundColor: Colors.white,
-          value: grid.totalCellsRevealed / (grid.size * grid.size - grid.totalMines),
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
-        ),
       ],
     );
   }
@@ -105,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text("Game Over"),
-          content: Text("You stepped on a mine. Be careful next time."),
+          content: Text("Bomb has been exploded!"),
           actions: [
             MaterialButton(
               color: Colors.redAccent,
@@ -126,25 +120,28 @@ class _MyHomePageState extends State<MyHomePage> {
       grid.openCells(cell);
       setState(() {});
       if (grid.checkIfPlayerWon()) {
-        final response = await showDialog(
+        final response1 = await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text("Congratulations"),
-            content: Text("You discovered all the tiles without stepping on any mines. Well done."),
+            content: Text(
+                "You solved ${grid.complexity.name} level. Tap the button to solve next one."),
             actions: [
               MaterialButton(
-                color: Colors.deepPurple,
+                color: Colors.blue[300],
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
-                child: Text("Next Level"),
+                child: Text("Next"),
               ),
             ],
           ),
         );
 
-        if (response) {
-          grid.size++;
+        if (response1) {
+          if (grid.complexity.index != 7) {
+            grid.complexity = Complexity.values[grid.complexity.index + 1];
+          }
           restart();
         }
       } else {
@@ -169,14 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.green,
         title: Text("Minesweeper"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.fiber_new),
-            onPressed: () => restart(),
-          ),
-        ],
       ),
       body: Container(
         margin: const EdgeInsets.all(1.0),

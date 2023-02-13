@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:course_work/Grid/cell.dart';
 import 'dart:math';
 
-enum Complexity { veryEasy, easy, normal, hard, veryHard, death, unreal, test }
+enum Complexity { test, veryEasy, easy, normal, hard, veryHard, death, unreal }
 
 class Grid {
   var size = 0;
@@ -29,18 +29,44 @@ class Grid {
       size = 7;
       totalMines = 19;
     } else if (complexity == Complexity.veryHard) {
-      size = 7;
+      size = 10;
       totalMines = 25;
     } else if (complexity == Complexity.death) {
-      size = 8;
+      size = 12;
       totalMines = 45;
     } else {
-      size = 10;
-      totalMines = 90;
+      size = 12;
+      totalMines = 35;
     }
   }
 
   void generateGrid() {
+    if (complexity == Complexity.test) {
+      size = 10;
+      totalMines = 0;
+    } else if (complexity == Complexity.veryEasy) {
+      size = 5;
+      totalMines = 5;
+    } else if (complexity == Complexity.easy) {
+      size = 5;
+      totalMines = 6;
+    } else if (complexity == Complexity.normal) {
+      size = 6;
+      totalMines = 12;
+    } else if (complexity == Complexity.hard) {
+      size = 7;
+      totalMines = 19;
+    } else if (complexity == Complexity.veryHard) {
+      size = 10;
+      totalMines = 25;
+    } else if (complexity == Complexity.death) {
+      size = 12;
+      totalMines = 45;
+    } else {
+      size = 12;
+      totalMines = 35;
+    }
+
     cells = [];
     totalCellsRevealed = 0;
 
