@@ -36,35 +36,35 @@ class _CellWidgetState extends State<CellWidget> {
         border: Border.all(color: Colors.grey),
         color: widget.cell.isRevealed
             ? (widget.cell.isMine
-                ? Colors.red[100]
-                : Colors.grey[200 + (widget.cell.value * 50)])
+            ? Colors.red[100]
+            : Colors.grey[200 + (widget.cell.value * 50)])
             : Colors.lightGreen[900],
       ),
       child: (widget.cell.isMine && widget.cell.isRevealed)
           ? Center(
-              child: Icon(
-                Icons.clear,
-                color: Colors.red,
-              ),
-            )
+        child: Icon(
+          Icons.clear,
+          color: Colors.red,
+        ),
+      )
           : widget.cell.isFlagged
-              ? Center(
-                  child: Icon(
-                    Icons.flag,
-                    color: Colors.red[400],
-                  ),
-                )
-              : widget.cell.isRevealed
-                  ? Center(
-                      child: Text(
-                        widget.cell.value.toString(),
-                        style: GoogleFonts.robotoMono(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    )
-                  : Container(),
+          ? Center(
+        child: Icon(
+          Icons.flag,
+          color: Colors.red[400],
+        ),
+      )
+          : widget.cell.isRevealed
+          ? Center(
+        child: Text(
+          widget.cell.value.toString(),
+          style: GoogleFonts.robotoMono(
+            fontWeight: FontWeight.w700,
+            fontSize: 20.0,
+          ),
+        ),
+      )
+          : Container(),
     );
   }
 }

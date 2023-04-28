@@ -1,7 +1,7 @@
 import 'dart:collection';
-
 import 'package:course_work/Grid/cell.dart';
 import 'dart:math';
+import 'package:course_work/research/ExtendedGrid.dart';
 
 enum Complexity { test, veryEasy, easy, normal, hard, veryHard, death, unreal }
 
@@ -147,6 +147,9 @@ class Grid {
   }
 
   void openCells(Cell cell) {
+    if (cell.isFlagged) {
+      return;
+    }
     cell.isRevealed = true;
     totalCellsRevealed += 1;
     int columnStart = 0;
@@ -158,27 +161,31 @@ class Grid {
     while (queue.isNotEmpty) {
       final currentCell = queue.removeFirst();
       columnStart = currentCell.column < 1 ? 0 : (currentCell.column - 1);
-      columnEnd = (currentCell.column + 1) == size
-          ? (size - 1)
-          : (currentCell.column + 1);
+      columnEnd = (currentCell.column + 1) == size ? (size - 1) : (currentCell.column + 1);
       rowStart = currentCell.row < 1 ? 0 : (currentCell.row - 1);
-      rowEnd =
-          (currentCell.row + 1) == size ? (size - 1) : (currentCell.row + 1);
-
+      rowEnd = (currentCell.row + 1) == size ? (size - 1) : (currentCell.row + 1);
       for (int i = rowStart; i <= rowEnd; ++i) {
         for (int j = columnStart; j <= columnEnd; ++j) {
           if (!cells[i][j].isMine &&
               !cells[i][j].isRevealed &&
+              !cells[i][j].isFlagged &&
               cells[i][j].value == 0) {
             cells[i][j].isRevealed = true;
             totalCellsRevealed += 1;
             queue.addLast(cells[i][j]);
-          } else if (!cells[i][j].isMine && !cells[i][j].isRevealed) {
+          } else if (!cells[i][j].isMine && !cells[i][j].isFlagged && !cells[i][j].isRevealed) {
             cells[i][j].isRevealed = true;
             totalCellsRevealed += 1;
+          } else if (!cells[i][j].isMine && !cells[i][j].isFlagged) {
+            cells[i][j].isRevealed = true;
           }
         }
       }
     }
+  }
+
+  bool solvable() {
+    ExtendedGrid extendedGrid = ExtendedGrid(this);
+    return extendedGrid.solvable();
   }
 }
