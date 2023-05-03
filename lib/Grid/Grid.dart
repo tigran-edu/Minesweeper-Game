@@ -147,7 +147,7 @@ class Grid {
   }
 
   void openCells(Cell cell) {
-    if (cell.isFlagged) {
+    if (cell.isFlagged || cell.isRevealed) {
       return;
     }
     cell.isRevealed = true;

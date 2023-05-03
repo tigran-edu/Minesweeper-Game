@@ -78,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void markFlagged(Cell cell) {
+    if (cell.isRevealed) {
+      return;
+    }
     cell.isFlagged = !cell.isFlagged;
     setState(() {});
   }
