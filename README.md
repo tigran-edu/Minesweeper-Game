@@ -1,1 +1,1 @@
-# This is my project Minesweeper
+# This is my Minesweeper project
