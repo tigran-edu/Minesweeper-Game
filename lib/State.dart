@@ -24,7 +24,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var grid = Grid(Complexity.test);
+  var grid = Grid(Complexity.veryEasy);
 
   Widget buildButton(Cell cell) {
     return GestureDetector(
@@ -86,8 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onTap(Cell cell) async {
-    if (cell.isMine && grid.totalCellsRevealed == 0) {
-      while (grid.cells[cell.row][cell.column].isMine == true || !grid.solvable()) {
+    if (grid.totalCellsRevealed == 0) {
+      while (grid.cells[cell.row][cell.column].isMine == true || !grid.solvable(grid.cells[cell.row][cell.column])) {
         restart();
       }
       cell = grid.cells[cell.row][cell.column];

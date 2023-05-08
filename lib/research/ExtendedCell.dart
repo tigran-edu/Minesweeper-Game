@@ -4,9 +4,11 @@ class ExtendedCell {
   bool isMine = false;
   bool isRevealed = false;
   int value = 0;
-  bool isFlagged = false;
 
   bool forecastIsMine = false;
-  int around = 0;
-  ExtendedCell(this.row, this.column, this.isMine, this.isRevealed);
+  ExtendedCell(this.row, this.column, this.isMine, this.isRevealed, this.value);
+
+  bool isEqual(ExtendedCell cell) {
+    return row == cell.row && column == cell.column;
+  }
 }
