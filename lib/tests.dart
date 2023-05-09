@@ -94,3 +94,40 @@ void allTest3() {
   grid.updateValuesAroundBomb(grid.cells[4][1]);
   grid.solvable(grid.cells[0][4]);
 }
+
+void allTest4() {
+  Grid grid = Grid(Complexity.normal);
+  for (int row = 0; row < grid.size; ++row) {
+    List<Cell> currentRow = [];
+    for (int col = 0; col < grid.size; ++col) {
+      final cell = Cell(row, col);
+      currentRow.add(cell);
+    }
+    grid.cells.add(currentRow);
+  }
+  grid.cells[0][0].isMine = true;
+  grid.cells[0][1].isMine = true;
+  grid.cells[0][3].isMine = true;
+  grid.cells[0][4].isMine = true;
+  grid.cells[2][0].isMine = true;
+  grid.cells[3][0].isMine = true;
+  grid.cells[3][5].isMine = true;
+  grid.cells[4][5].isMine = true;
+  grid.cells[5][0].isMine = true;
+  grid.cells[5][3].isMine = true;
+  grid.cells[5][4].isMine = true;
+  grid.cells[5][5].isMine = true;
+  grid.updateValuesAroundBomb(grid.cells[0][0]);
+  grid.updateValuesAroundBomb(grid.cells[0][1]);
+  grid.updateValuesAroundBomb(grid.cells[0][3]);
+  grid.updateValuesAroundBomb(grid.cells[0][4]);
+  grid.updateValuesAroundBomb(grid.cells[2][0]);
+  grid.updateValuesAroundBomb(grid.cells[3][0]);
+  grid.updateValuesAroundBomb(grid.cells[3][5]);
+  grid.updateValuesAroundBomb(grid.cells[4][5]);
+  grid.updateValuesAroundBomb(grid.cells[5][0]);
+  grid.updateValuesAroundBomb(grid.cells[5][3]);
+  grid.updateValuesAroundBomb(grid.cells[5][4]);
+  grid.updateValuesAroundBomb(grid.cells[5][5]);
+  grid.solvable(grid.cells[3][3]);
+}
