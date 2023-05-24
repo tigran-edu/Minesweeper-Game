@@ -1,30 +1,35 @@
+// ignore_for_file: file_names
+
+
 import 'package:flutter/material.dart';
-import 'package:course_work/Grid/cell.dart';
-import 'package:course_work/Grid/Grid.dart';
+import 'package:provider/provider.dart';
+import 'package:saper/stuffs/providers/flag_provider.dart';
+import 'package:saper/stuffs/constants.dart';
 
-class MyApp extends StatelessWidget {
+import 'grid/cell.dart';
+import 'grid/grid.dart';
+
+
+class SaperGrid extends StatefulWidget {
+  const SaperGrid({super.key, required this.complexity});
+
+  final String complexity;
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Minesweeper Flutter',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
-    );
+  SaperGridState createState() => SaperGridState();
+}
+
+class SaperGridState extends State<SaperGrid> {
+  // ignore: prefer_typing_uninitialized_variables
+  late var grid;
+
+  @override
+  void initState() {
+    super.initState();
+    grid = Grid(complexity: widget.complexity);
+    FlagProvider().flagInit(grid.totalMines);
+    grid.generateGrid();
   }
-}
-
-
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  var grid = Grid(Complexity.veryEasy);
 
   Widget buildButton(Cell cell) {
     return GestureDetector(
@@ -78,36 +83,39 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void markFlagged(Cell cell) {
-    if (cell.isRevealed) {
+    if (cell.isRevealed || (!cell.isFlagged && Provider.of<FlagProvider>(context, listen: false).flagCount == 0)) {
       return;
     }
-    cell.isFlagged = !cell.isFlagged;
-    setState(() {});
+    if (cell.isFlagged) {
+      Provider.of<FlagProvider>(context, listen: false).flagPlus();
+    } else {
+      Provider.of<FlagProvider>(context, listen: false).flagCount != 0 ? Provider.of<FlagProvider>(context, listen: false).flagMinus() : null;
+    }
+    Provider.of<FlagProvider>(context, listen: false).flagCount != -1 ? (cell.isFlagged = !cell.isFlagged) : null;
   }
 
   void onTap(Cell cell) async {
     if (grid.totalCellsRevealed == 0) {
-      while (grid.cells[cell.row][cell.column].isMine == true || !grid.solvable(grid.cells[cell.row][cell.column])) {
+      while (grid.cells[cell.row][cell.column].isMine || !grid.solvable(grid.cells[cell.row][cell.column])) {
         restart();
       }
       cell = grid.cells[cell.row][cell.column];
     }
-
     if (cell.isMine) {
       grid.boom();
       setState(() {});
       final response = await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text("Game Over"),
-          content: Text("Bomb has been exploded!"),
+          title: const Text("Game Over"),
+          content: const Text("Bomb has been exploded!"),
           actions: [
             MaterialButton(
               color: Colors.redAccent,
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text("Restart"),
+              child: const Text("Restart"),
             ),
           ],
         ),
@@ -124,16 +132,16 @@ class _MyHomePageState extends State<MyHomePage> {
         final response1 = await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text("Congratulations"),
+            title: const Text("Congratulations"),
             content: Text(
-                "You solved ${grid.complexity.name} level. Tap the button to solve next one."),
+                "You solved ${grid.complexity} level. Tap the button to solve next one."),
             actions: [
               MaterialButton(
                 color: Colors.blue[300],
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
-                child: Text("Next"),
+                child: const Text("Next"),
               ),
             ],
           ),
@@ -141,8 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
         if (response1 == null) {
           restart();
         } else if (response1) {
-          if (grid.complexity.index != 7) {
-            grid.complexity = Complexity.values[grid.complexity.index + 1];
+          if (grid.complexity != 'ultra') {
+            grid.complexity = complexityList[complexityList.indexOf(grid.complexity) + 1];
           }
           restart();
         }
@@ -156,25 +164,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       grid.generateGrid();
     });
+    FlagProvider().flagInit(grid.totalMines);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    grid.generateGrid();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text("Minesweeper"),
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(1.0),
-        child: buildButtonColumn(),
-      ),
+    return Container(
+      margin: const EdgeInsets.all(1.0),
+      child: buildButtonColumn(),
     );
   }
 }

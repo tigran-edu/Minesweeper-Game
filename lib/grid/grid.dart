@@ -1,39 +1,44 @@
+// ignore: file_names
 import 'dart:collection';
-import 'package:course_work/Grid/cell.dart';
 import 'dart:math';
-import 'package:course_work/research/ExtendedGrid.dart';
+import 'cell.dart';
+import 'package:saper/research/ExtendedGrid.dart';
 
-enum Complexity { test, veryEasy, easy, normal, hard, veryHard, death, unreal }
+enum Complexity { test, veryEasy, easy, normal, hard, veryHard, death, unreal, ultra }
 
 class Grid {
+
   var size = 0;
   List<List<Cell>> cells = [];
   var totalCellsRevealed = 0;
   var totalMines = 0;
-  Complexity complexity = Complexity.veryEasy;
+  String complexity;
 
-  Grid(this.complexity) {
-    if (complexity == Complexity.test) {
+  Grid({required this.complexity}) {
+    if (complexity == (Complexity.test).toString().substring(11)) {
       size = 10;
       totalMines = 0;
-    } else if (complexity == Complexity.veryEasy) {
+    } else if (complexity == (Complexity.veryEasy).toString().substring(11)) {
       size = 5;
       totalMines = 5;
-    } else if (complexity == Complexity.easy) {
+    } else if (complexity == (Complexity.easy).toString().substring(11)) {
       size = 5;
       totalMines = 6;
-    } else if (complexity == Complexity.normal) {
+    } else if (complexity == (Complexity.normal).toString().substring(11)) {
       size = 6;
       totalMines = 12;
-    } else if (complexity == Complexity.hard) {
+    } else if (complexity == (Complexity.hard).toString().substring(11)) {
       size = 7;
       totalMines = 19;
-    } else if (complexity == Complexity.veryHard) {
+    } else if (complexity == (Complexity.veryHard).toString().substring(11)) {
       size = 10;
       totalMines = 25;
-    } else if (complexity == Complexity.death) {
+    } else if (complexity == (Complexity.death).toString().substring(11)) {
       size = 12;
       totalMines = 45;
+    } else if (complexity == (Complexity.ultra).toString().substring(11)) {
+      size = 25;
+      totalMines = 100;
     } else {
       size = 12;
       totalMines = 35;
@@ -41,32 +46,6 @@ class Grid {
   }
 
   void generateGrid() {
-    if (complexity == Complexity.test) {
-      size = 10;
-      totalMines = 0;
-    } else if (complexity == Complexity.veryEasy) {
-      size = 5;
-      totalMines = 5;
-    } else if (complexity == Complexity.easy) {
-      size = 5;
-      totalMines = 6;
-    } else if (complexity == Complexity.normal) {
-      size = 6;
-      totalMines = 12;
-    } else if (complexity == Complexity.hard) {
-      size = 7;
-      totalMines = 19;
-    } else if (complexity == Complexity.veryHard) {
-      size = 10;
-      totalMines = 25;
-    } else if (complexity == Complexity.death) {
-      size = 12;
-      totalMines = 45;
-    } else {
-      size = 12;
-      totalMines = 35;
-    }
-
     cells = [];
     totalCellsRevealed = 0;
 
@@ -74,6 +53,7 @@ class Grid {
       List<Cell> currentRow = [];
       for (int column = 0; column < size; column++) {
         final cell = Cell(row, column);
+        cell.kFontSize = cell.kFontSize * cell.kFontSize ~/ size;
         currentRow.add(cell);
       }
       cells.add(currentRow);
@@ -86,6 +66,18 @@ class Grid {
         }
       }
     }
+  }
+  List<int> takeLimits(Cell cell) {
+    List<int> limits = [];
+    int columnStart = cell.column < 1 ? 0 : (cell.column - 1);
+    int columnEnd = (cell.column + 1) == size ? (size - 1) : (cell.column + 1);
+    int rowStart = cell.row < 1 ? 0 : (cell.row - 1);
+    int rowEnd = (cell.row + 1) == size ? (size - 1) : (cell.row + 1);
+    limits.add(columnStart);
+    limits.add(columnEnd);
+    limits.add(rowStart);
+    limits.add(rowEnd);
+    return limits;
   }
 
   void fillMatrix() {
@@ -117,16 +109,16 @@ class Grid {
   }
 
   void updateValuesAroundBomb(Cell cell) {
-    int xStart = cell.column < 1 ? 0 : (cell.column - 1);
-    int xEnd = cell.column + 1 == size ? (size - 1) : (cell.column + 1);
+    List<int> limits = takeLimits(cell);
+    int columnStart = limits[0];
+    int columnEnd = limits[1];
+    int rowStart = limits[2];
+    int rowEnd = limits[3];
 
-    int yStart = cell.row < 1 ? 0 : (cell.row - 1);
-    int yEnd = (cell.row + 1) == size ? (size - 1) : (cell.row + 1);
-
-    for (int i = xStart; i <= xEnd; ++i) {
-      for (int j = yStart; j <= yEnd; ++j) {
-        if (!cells[j][i].isMine) {
-          cells[j][i].value++;
+    for (int row = rowStart; row <= rowEnd; ++row) {
+      for (int col = columnStart; col <= columnEnd; ++col) {
+        if (!cells[row][col].isMine) {
+          cells[row][col].value++;
         }
       }
     }
@@ -160,10 +152,11 @@ class Grid {
     queue.addLast(cell);
     while (queue.isNotEmpty) {
       final currentCell = queue.removeFirst();
-      columnStart = currentCell.column < 1 ? 0 : (currentCell.column - 1);
-      columnEnd = (currentCell.column + 1) == size ? (size - 1) : (currentCell.column + 1);
-      rowStart = currentCell.row < 1 ? 0 : (currentCell.row - 1);
-      rowEnd = (currentCell.row + 1) == size ? (size - 1) : (currentCell.row + 1);
+      List<int> limits = takeLimits(currentCell);
+      columnStart = limits[0];
+      columnEnd = limits[1];
+      rowStart = limits[2];
+      rowEnd = limits[3];
       for (int i = rowStart; i <= rowEnd; ++i) {
         for (int j = columnStart; j <= columnEnd; ++j) {
           if (!cells[i][j].isMine &&
@@ -176,16 +169,15 @@ class Grid {
           } else if (!cells[i][j].isMine && !cells[i][j].isFlagged && !cells[i][j].isRevealed) {
             cells[i][j].isRevealed = true;
             totalCellsRevealed += 1;
-          } else if (!cells[i][j].isMine && !cells[i][j].isFlagged) {
-            cells[i][j].isRevealed = true;
           }
         }
       }
     }
   }
 
-  bool solvable() {
-    ExtendedGrid extendedGrid = ExtendedGrid(this);
+  bool solvable(Cell cell) {
+    openCells(cell);
+    ExtendedGrid extendedGrid = ExtendedGrid(cells, totalMines, size, totalCellsRevealed);
     return extendedGrid.solvable();
   }
 }

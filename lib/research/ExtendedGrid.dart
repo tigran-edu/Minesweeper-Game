@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:course_work/research/ExtendedCell.dart';
-import 'package:course_work/Grid/Grid.dart';
-import 'package:course_work/research/Group.dart';
+import 'ExtendedCell.dart';
+import 'Group.dart';
+import '../grid/cell.dart';
 
 class ExtendedGrid {
   var size = 0;
@@ -10,15 +10,12 @@ class ExtendedGrid {
   var totalCellsRevealed = 0;
   var totalMines = 0;
 
-  ExtendedGrid(Grid grid) {
-    totalMines = grid.totalMines;
-    size = grid.size;
-    totalCellsRevealed = grid.totalCellsRevealed;
+  ExtendedGrid(List<List<Cell>> copyCells, this.totalMines, this.size, this.totalCellsRevealed) {
     for (int i = 0; i < size; ++i) {
       List<ExtendedCell> currentRow = [];
       for (int j = 0; j < size; ++j) {
-        final cell = ExtendedCell(grid.cells[i][j].row, grid.cells[i][j].column,
-            grid.cells[i][j].isMine, grid.cells[i][j].isRevealed, grid.cells[i][j].value);
+        final cell = ExtendedCell(copyCells[i][j].row, copyCells[i][j].column,
+            copyCells[i][j].isMine, copyCells[i][j].isRevealed, copyCells[i][j].value);
         currentRow.add(cell);
       }
       cells.add(currentRow);
@@ -180,7 +177,8 @@ class ExtendedGrid {
   }
 
   bool solvable() {
-    while (iteration()) {}
+    while (iteration()) {
+    }
     return checkIfPlayerWon();
   }
 }

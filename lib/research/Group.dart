@@ -1,5 +1,6 @@
-import 'package:course_work/research/ExtendedCell.dart';
 import 'dart:math';
+
+import 'ExtendedCell.dart';
 
 class Group {
   int size = 0;
@@ -49,7 +50,6 @@ class Group {
         }
       }
     }
-    // требуются тесты
     int counter = 0;
     for (int i = max(0, amountOfMines - size + newGroup.size); i <= min(newGroup.size, amountOfMines); ++i) {
       if (anotherGroup.amountOfMines >= i && i >= anotherGroup.amountOfMines + newGroup.size - anotherGroup.size) {

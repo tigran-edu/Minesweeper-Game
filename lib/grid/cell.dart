@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
+import '../stuffs/providers/theme_provider.dart';
 class Cell {
   int row = 0;
   int column = 0;
@@ -8,6 +10,7 @@ class Cell {
   bool isRevealed = false;
   int value = 0;
   bool isFlagged = false;
+  int kFontSize = 12;
 
   Cell(this.row, this.column);
 }
@@ -23,25 +26,26 @@ class CellWidget extends StatefulWidget {
   final Cell cell;
 
   @override
-  _CellWidgetState createState() => _CellWidgetState();
+  CellWidgetState createState() => CellWidgetState();
 }
 
-class _CellWidgetState extends State<CellWidget> {
+class CellWidgetState extends State<CellWidget> {
   @override
   Widget build(BuildContext context) {
+    Color themeColor = Provider.of<ThemeProvider>(context).themeColor;
     return Container(
       margin: const EdgeInsets.only(right: 1, bottom: 1),
       height: MediaQuery.of(context).size.width / widget.size + 1,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.black),
         color: widget.cell.isRevealed
             ? (widget.cell.isMine
             ? Colors.red[100]
             : Colors.grey[200 + (widget.cell.value * 50)])
-            : Colors.lightGreen[900],
+            : themeColor,
       ),
       child: (widget.cell.isMine && widget.cell.isRevealed)
-          ? Center(
+          ? const Center(
         child: Icon(
           Icons.clear,
           color: Colors.red,
@@ -52,6 +56,7 @@ class _CellWidgetState extends State<CellWidget> {
         child: Icon(
           Icons.flag,
           color: Colors.red[400],
+          size: 1.5 * widget.cell.kFontSize.toDouble(),
         ),
       )
           : widget.cell.isRevealed
@@ -60,7 +65,7 @@ class _CellWidgetState extends State<CellWidget> {
           widget.cell.value.toString(),
           style: GoogleFonts.robotoMono(
             fontWeight: FontWeight.w700,
-            fontSize: 20.0,
+            fontSize: widget.cell.kFontSize.toDouble(),
           ),
         ),
       )
