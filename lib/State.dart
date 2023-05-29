@@ -96,6 +96,7 @@ class SaperGridState extends State<SaperGrid> {
 
   void onTap(Cell cell) async {
     if (grid.totalCellsRevealed == 0) {
+      Provider.of<FlagProvider>(context, listen: false).flagInit(grid.totalMines);
       while (grid.cells[cell.row][cell.column].isMine || !grid.solvable(grid.cells[cell.row][cell.column])) {
         restart();
       }
@@ -161,10 +162,10 @@ class SaperGridState extends State<SaperGrid> {
   }
 
   void restart() {
+    Provider.of<FlagProvider>(context, listen: false).flagInit(grid.totalMines);
     setState(() {
       grid.generateGrid();
     });
-    FlagProvider().flagInit(grid.totalMines);
   }
 
 

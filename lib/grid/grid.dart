@@ -46,9 +46,36 @@ class Grid {
   }
 
   void generateGrid() {
+    if (complexity == (Complexity.test).toString().substring(11)) {
+      size = 10;
+      totalMines = 0;
+    } else if (complexity == (Complexity.veryEasy).toString().substring(11)) {
+      size = 5;
+      totalMines = 5;
+    } else if (complexity == (Complexity.easy).toString().substring(11)) {
+      size = 5;
+      totalMines = 6;
+    } else if (complexity == (Complexity.normal).toString().substring(11)) {
+      size = 6;
+      totalMines = 12;
+    } else if (complexity == (Complexity.hard).toString().substring(11)) {
+      size = 7;
+      totalMines = 19;
+    } else if (complexity == (Complexity.veryHard).toString().substring(11)) {
+      size = 10;
+      totalMines = 25;
+    } else if (complexity == (Complexity.death).toString().substring(11)) {
+      size = 12;
+      totalMines = 45;
+    } else if (complexity == (Complexity.ultra).toString().substring(11)) {
+      size = 25;
+      totalMines = 100;
+    } else {
+      size = 12;
+      totalMines = 35;
+    }
     cells = [];
     totalCellsRevealed = 0;
-
     for (int row = 0; row < size; row++) {
       List<Cell> currentRow = [];
       for (int column = 0; column < size; column++) {
